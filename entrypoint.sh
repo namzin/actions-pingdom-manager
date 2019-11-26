@@ -20,5 +20,5 @@ fi
 # Execute script
 echo "Loading Configuration File: ${FILENAME}"
 cd /opt/pingdom
-pip install -r requirements.tx
+pip install -r requirements.txt
 python pingdom.py "${FILENAME}" "${PINGDOM_API_KEY}"
