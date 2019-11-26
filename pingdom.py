@@ -333,10 +333,36 @@ class Pingdom:
             if isinstance(config_pingdom['default'], dict) is False:
                 raise Exception('Configuration Error: Invalid `pingdom.default` item type, expected YAML object')
 
+        default = {
+            'auth': '',
+            'url': '',
+            'encryption': False,
+            'port': '',
+            'shouldcontain': '',
+            'shouldnotcontain': '',
+            'postdata': '',
+            'requestheaders': {},
+            'name': '',
+            'host': '',
+            'type': 'http',
+            'paused': False,
+            'resolution': 5,
+            'userids': '',
+            'sendnotificationwhendown': 2,
+            'notifyagainevery': 0,
+            'notifywhenbackup': True,
+            'probe_filters': '',
+            'ipv6': False,
+            'integrationids': '',
+            'teamids': '',
+            'custom_message': ''
+        }
+
         if 'default' in config_pingdom:
             default = config_pingdom['default']
         else:
             default = None
+
 
         for check in config_pingdom_checks:
             # Populate default values
