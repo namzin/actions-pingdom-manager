@@ -408,7 +408,7 @@ class Pingdom:
             host = check['host']
 
             # If team IDs were specified, convert them into their integer values
-            tag_csv = tag
+            tag_csv = '{tag},'.format(tag=tag)
             if 'tags' in check:
                 for tag_current in check['tags']:
                     tag_csv += '{tag_current},'.format(tag_current=tag_current)
