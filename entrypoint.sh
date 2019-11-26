@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Get parameters
-FILENAME=$(echo "${GITHUB_WORKSPACE}/${1}" | tr -s /)
+FILENAME=$(echo "/${GITHUB_WORKSPACE}/${1}" | tr -s /)
 PINGDOM_API_KEY=${4}
 
 # Make sure a filename was specified
