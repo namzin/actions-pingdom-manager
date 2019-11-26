@@ -25,14 +25,14 @@ class Pingdom:
         self.__get_checks_cache__ = None
         self.__api_key__ = api_key
 
-    def get_checks(self, cache=True) -> dict:
+    def get_checks(self, cache=True) -> list:
         """
         Return list of configured checks from Pingdom
 
         :type cache: bool
         :param cache: If True, subsequent calls will return cached results
 
-        :return: Dictionary containing list of checks (refer to Pingdom API 3.1 documentation for contents)
+        :return: List of checks (refer to Pingdom API 3.1 documentation for contents)
         """
         if cache is True and self.__get_checks_cache__ is not None:
             return self.__get_checks_cache__
@@ -44,16 +44,11 @@ class Pingdom:
 
         response_json = json.loads(response.content)
 
-        checks = {}
+        checks = []
 
         if 'checks' in response_json:
             for check_current in response_json['checks']:
-                if 'host' in check_current:
-                    host_current = str(check_current['host']).lower()
-                    checks[host_current] = check_current
-                elif 'hostname' in check_current:
-                    host_current = str(check_current['hostname']).lower()
-                    checks[host_current] = check_current
+                checks.append(check_current)
 
         self.__get_checks_cache__ = checks
         return checks
@@ -95,7 +90,7 @@ class Pingdom:
         if response_create.status_code != 200:
             raise Exception(response_create.content)
 
-    def host_has_check(self, host, tags=None) -> bool:
+    def find_matching_hosts(self, host, tags=None) -> list:
         """
         Return boolean flag indicating whether a check exists for the specified domain
 
@@ -105,42 +100,55 @@ class Pingdom:
         :type tags: list or None
         :param tags: Optional list of tags that must be present
 
-        :return: Boolean flag indicating whether check exists
+        :return: List of matches
         """
+        matches = []
+
         host = str(host).lower()
         checks = self.get_checks()
 
+        found = []
+        for check in checks:
+            if 'host' in check:
+                if check['host'] == host:
+                    found.append(check)
+            if 'hostname' in check:
+                if check['hostname'] == host:
+                    found.append(check)
+
         # If the host does not exist in the checks, die early
-        if host not in checks:
-            return False
+        if len(found) == 0:
+            return []
 
         # If there is not tag filter defined, just check if the hostname exists
         if tags is None or len(tags) == 0:
-            return host in checks
+            return found
 
         # Otherwise search for all tags requested
-        count_tags_found = 0
-        check = checks[host]
+        for check in found:
+            count_tags_found = 0
+            response_detail = self.__api_get__('/checks/{id}'.format(id=check['id']))
 
-        response_detail = self.__api_get__('/checks/{id}'.format(id=check['id']))
+            if response_detail.status_code != 200:
+                raise Exception(response_detail.content)
 
-        if response_detail.status_code != 200:
-            raise Exception(response_detail.content)
+            response_detail_json = json.loads(response_detail.content)
+            check_detail = response_detail_json['check']
 
-        response_detail_json = json.loads(response_detail.content)
-        check_detail = response_detail_json['check']
+            # If there are no tags defined, get out of here
+            if 'tags' not in check_detail:
+                continue
 
-        # If there are no tags defined, get out of here
-        if 'tags' not in check_detail:
-            return False
+            # Iterate all tags searching for the ones requested
+            for tag in check_detail['tags']:
+                for tag_current in tags:
+                    if tag['name'] == tag_current:
+                        count_tags_found += 1
 
-        # Iterate all tags searching for the ones requested
-        for tag in check_detail['tags']:
-            for tag_current in tags:
-                if tag['name'] == tag_current:
-                    count_tags_found += 1
+            if count_tags_found == len(tags):
+                matches.append(check)
 
-        return count_tags_found == len(tags)
+        return matches
 
     # Internal HTTP methods
 
@@ -383,8 +391,6 @@ class Pingdom:
         teams = configuration['pingdom']['teams']
         integrations = configuration['pingdom']['integrations']
 
-        existing_checks = pingdom.get_checks()
-
         error = False
 
         if 'default' in configuration['pingdom']:
@@ -422,21 +428,24 @@ class Pingdom:
                     integration_ids_csv += '{integration_key},'.format(integration_key=integrations[integration_key])
                 check['integrationids'] = integration_ids_csv.rstrip(',')
 
-            if pingdom.host_has_check(host=host, tags=[tag]) is False:
+            matches = pingdom.find_matching_hosts(host=host, tags=[tag])
+
+            if len(matches) == 0:
                 try:
                     # Create the new check
                     print('Creating Check: {host}'.format(host=host))
-                    #pingdom.create_check(configuration=check)
+                    pingdom.create_check(configuration=check)
                 except Exception as create_exception:
                     # Continue on failure but log the output
                     print('WARNING: Failed to create Pingdom health check')
                     print('{create_exception}'.format(create_exception=create_exception))
             else:
                 try:
-                    # Update the existing check
-                    print('Updating Check: {host}'.format(host=host))
-                    check_id = existing_checks[check['host']]['id']
-                    pingdom.update_check(check_id=check_id, configuration=check)
+                    for check_current in matches:
+                        # Update the existing check
+                        print('Updating Check: {host}'.format(host=host))
+                        check_id = check_current['id']
+                        pingdom.update_check(check_id=check_id, configuration=check)
 
                 except Exception as create_exception:
                     # Continue on failure but log the output
