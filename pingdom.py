@@ -90,7 +90,7 @@ class Pingdom:
         if response_create.status_code != 200:
             raise Exception(response_create.content)
 
-    def find_matching_hosts(self, host, tags=None) -> list:
+    def find_matching_checks(self, host, tags=None) -> list:
         """
         Return boolean flag indicating whether a check exists for the specified domain
 
@@ -100,7 +100,7 @@ class Pingdom:
         :type tags: list or None
         :param tags: Optional list of tags that must be present
 
-        :return: List of matches
+        :return: List of checks that match the hostname and tags
         """
         matches = []
 
@@ -428,7 +428,7 @@ class Pingdom:
                     integration_ids_csv += '{integration_key},'.format(integration_key=integrations[integration_key])
                 check['integrationids'] = integration_ids_csv.rstrip(',')
 
-            matches = pingdom.find_matching_hosts(host=host, tags=[tag])
+            matches = pingdom.find_matching_checks(host=host, tags=[tag])
 
             if len(matches) == 0:
                 try:
