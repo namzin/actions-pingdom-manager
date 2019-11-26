@@ -20,5 +20,5 @@ pip install ./requirements.txt
 
 # Execute script
 CONFIG_FILENAME=$(echo "${GITHUB_WORKSPACE}/${FILENAME}" | tr -s /)
-echo "Loading Configuration File: $C{CONFIG_FILENAME}"
+echo "Loading Configuration File: ${CONFIG_FILENAME}"
 python ./pingdom.py "${CONFIG_FILENAME}" "${PINGDOM_API_KEY}"
