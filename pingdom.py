@@ -359,10 +359,8 @@ class Pingdom:
         }
 
         if 'default' in config_pingdom:
-            default = config_pingdom['default']
-        else:
-            default = None
-
+            for key, value in config_pingdom['default'].items():
+                default[key] = value
 
         for check in config_pingdom_checks:
             # Populate default values
