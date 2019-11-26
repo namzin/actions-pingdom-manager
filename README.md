@@ -28,7 +28,7 @@ on:
 
 jobs:
   deploy-pingdom-health-checks:
-    name: Deploy Pingdom Health Checkes
+    name: Deploy Pingdom Health Checks
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Health Checks
