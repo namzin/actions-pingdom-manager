@@ -19,4 +19,5 @@ fi
 pip install ./requirements.txt
 
 # Execute script
-python ./pingdom.py "${FILENAME}" "${PINGDOM_API_KEY}"
+CONFIG_FILENAME=$(echo "${GITHUB_WORKSPACE}/${FILENAME}" | tr -s /)
+python ./pingdom.py "${CONFIG_FILENAME}" "${PINGDOM_API_KEY}"
