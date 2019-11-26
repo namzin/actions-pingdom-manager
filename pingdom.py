@@ -426,7 +426,7 @@ class Pingdom:
                 try:
                     # Create the new check
                     print('Creating Check: {host}'.format(host=host))
-                    pingdom.create_check(configuration=check)
+                    #pingdom.create_check(configuration=check)
                 except Exception as create_exception:
                     # Continue on failure but log the output
                     print('WARNING: Failed to create Pingdom health check')
