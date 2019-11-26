@@ -4,6 +4,7 @@
 FILENAME=$(echo "/${GITHUB_WORKSPACE}/${1}" | tr -s /)
 PINGDOM_API_KEY=${4}
 
+echo $PWD;
 ls -l;
 ls /${GITHUB_WORKSPACE}/ -l;
 # Make sure a filename was specified
