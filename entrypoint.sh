@@ -16,7 +16,7 @@ if [[ ! -f "${FILENAME}" ]]; then
 fi
 
 # Install Python dependencies
-pip install ./requirements.txt
+pip install /opt/pingdom/requirements.txt
 
 # Execute script
 echo "Loading Configuration File: ${FILENAME}"
