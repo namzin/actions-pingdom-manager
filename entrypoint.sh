@@ -13,6 +13,7 @@ if [[ -z "${FILENAME}" ]]; then
     exit 1;
 fi
 
+echo "${FILENAME}"
 if [[ ! -f "${FILENAME}" ]]; then
     echo "ERROR: The configuration filename specified (${FILENAME}) could not be located"
     exit 2;
