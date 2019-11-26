@@ -20,4 +20,4 @@ pip install ./requirements.txt
 
 # Execute script
 echo "Loading Configuration File: ${FILENAME}"
-python /bin/pingdom.py "${FILENAME}" "${PINGDOM_API_KEY}"
+python /opt/pingdom/pingdom.py "${FILENAME}" "${PINGDOM_API_KEY}"
