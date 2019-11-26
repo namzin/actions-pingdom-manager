@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Get parameters
-FILENAME=$(echo "/${GITHUB_WORKSPACE}/${1}" | tr -s /)
+FILENAME=$(echo "${GITHUB_WORKSPACE}/${1}" | tr -s /)
 PINGDOM_API_KEY=${4}
 
 # Make sure a filename was specified
@@ -10,7 +10,6 @@ if [[ -z "${FILENAME}" ]]; then
     exit 1;
 fi
 
-echo "${FILENAME}"
 if [[ ! -f "${FILENAME}" ]]; then
     echo "ERROR: The configuration filename specified (${FILENAME}) could not be located"
     exit 2;
@@ -21,4 +20,4 @@ pip install ./requirements.txt
 
 # Execute script
 echo "Loading Configuration File: ${FILENAME}"
-python ./pingdom.py "${FILENAME}" "${PINGDOM_API_KEY}"
+python /bin/pingdom.py "${FILENAME}" "${PINGDOM_API_KEY}"
