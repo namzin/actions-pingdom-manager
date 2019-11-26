@@ -400,7 +400,13 @@ class Pingdom:
                         check[key] = value
 
             host = check['host']
-            check['tags'] = [tag]
+
+            # If team IDs were specified, convert them into their integer values
+            tag_csv = tag
+            if 'tags' in check:
+                for tag in check['tags']:
+                    tag_csv += '{team_key},'.format(team_key=teams[team_key])
+                check['tags'] = tag_csv.rstrip(',')
 
             # If team IDs were specified, convert them into their integer values
             if 'teamids' in check:
