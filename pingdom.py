@@ -339,7 +339,6 @@ class Pingdom:
             'encryption': False,
             'port': '',
             'shouldcontain': '',
-            'shouldnotcontain': '',
             'postdata': '',
             'requestheaders': {},
             'name': '',
