@@ -404,8 +404,8 @@ class Pingdom:
             # If team IDs were specified, convert them into their integer values
             tag_csv = tag
             if 'tags' in check:
-                for tag in check['tags']:
-                    tag_csv += '{tag},'.format(tag=tag)
+                for tag_current in check['tags']:
+                    tag_csv += '{tag_current},'.format(tag_current=tag_current)
                 check['tags'] = tag_csv.rstrip(',')
 
             # If team IDs were specified, convert them into their integer values
