@@ -1,0 +1,22 @@
+name: 'eonx-com/actions-pingdom-manager'
+description: 'Automatically create/update Pingdom health checks via GitOps'
+author: 'Damian Sloane <damian.sloane@eonx.com>'
+
+branding:
+  icon: 'x'
+  color: 'red'
+
+inputs:
+  filename:
+    description: 'Configuration file to use'
+    required: true
+  api_key:
+    description: 'Pingdom API Key'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.filename }}
+    - ${{ inputs.api_key }}

@@ -1,0 +1,45 @@
+gitops:
+  type: pingdom-checks
+  version: 1.0
+
+pingdom:
+  # Define the custom tag that will be added to Pingdom checks managed by this tool
+
+  tag: gitops-pingdom
+
+  # This is a horrible hack to make this file more readable. Pingdom requires the integer ID of teams to be passed in
+  # the checks configuration- this makes it possible to use the identifier label instead
+
+  teams:
+    devops: 454656
+
+  integrations:
+    opsgenie: 12125
+    slack_devops: 23225
+
+  # Define defaults used by all checks (these can be overridden in specific checks)
+
+  default:
+    type: http
+    resolution: 1
+    paused: false
+    sendnotificationwhendown: 1
+    notifyagainevery: 6
+    notifywhenbackup: true
+    integrationids:
+      - opsgenie
+      - slack_devops
+    teamids:
+      - devops
+
+  # Define the checks managed by this tool (refer to API documentation https://docs.pingdom.com/api)
+
+  checks:
+    - name: Example website
+      host: example.com
+      shouldcontain: "Welcome to the example.com website"
+
+    - name: Another example website
+      host: another.example.com
+      url: /access
+      shouldcontain: "Welcome to another.example.com/access website"
