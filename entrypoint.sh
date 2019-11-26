@@ -2,7 +2,7 @@
 
 # Get parameters
 FILENAME=$(echo "${GITHUB_WORKSPACE}/${1}" | tr -s /)
-PINGDOM_API_KEY=${4}
+PINGDOM_API_KEY=${2}
 
 # Make sure a filename was specified
 if [[ -z "${FILENAME}" ]]; then
